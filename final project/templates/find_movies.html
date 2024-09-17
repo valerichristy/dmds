@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="genre-title">{% block title %} Find Movies {% endblock %}</h1>
+<div class="filters">
+    <div class="search-input">
+        <label for="search">Search : </label>
+        <input type="text" id="search" name="search" onchange="updateFilter()"><br><br>
+    </div>
+
+    <select class="genre-selection" name="genres" id="genres" onchange="updateFilter()">
+        <option value="All">All</option>
+        {% for g in genres %}
+        {% if g == curr_genre %}
+        <option value="{{g}}" selected>
+            {{g}}
+        </option>
+        {% else %}
+        <option value="{{g}}">
+            {{g}}
+        </option>
+        {% endif %}
+        {% endfor %}
+    </select>
+
+    <div class="runtime-input">
+        <label for="runtime">Minimum Runtime (mins) : </label>
+        <input type="number" id="runtime" name="runtime" onchange="updateFilter()"><br><br>
+    </div>
+</div>
+
+<div class="movies-selection" id="movies-selection">
+    <!-- <div class='card'>
+        <div class='card_left'>
+            <img src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/343086/h8fnwL1.png'>
+        </div>
+        <div class='card_right'>
+            <h1>KILL BILL: VOL. 1</h1>
+            <div class='card_right__details'>
+                <ul>
+                    <li>2003</li>
+                    <li>111 min</li>
+                    <li>Action</li>
+                </ul>
+                <div class='card_right__rating'>
+                    <div class='card_right__rating__stars'>
+
+                    </div>
+                </div>
+                <div class='card_right__review'>
+                    <p>The lead character, called 'The Bride,' was a member <br /> of the Deadly Viper Assassination
+                        Squad,
+                        led by her <br /> lover 'Bill.' Upon realizing she was pregnant with Bill's<br /> child, 'The
+                        Bride'
+                        decided to escape her life as a killer.<br /> She fled to Texas, met a young man, who, on the
+                        day<br /> of their wedding rehearsal was gunned down by....</p>
+                    <a href='http://www.imdb.com/title/tt0266697/plotsummary?ref_=tt_stry_pl' target='_blank'>Read
+                        more</a>
+                </div>
+                <div class='card_right__button'>
+                    <a href='https://www.youtube.com/watch?v=ot6C1ZKyiME' target='_blank'>WATCH TRAILER</a>
+                </div>
+            </div>
+        </div>
+    </div> !-->
+</div>
+
+
+<!-- <table class="genre-table">
+    <tr class="genre-table-columns" id="genre-table-columns">
+        <th style="width:100px;">Title</th>
+        <th style="width:100px;">Genre(s)</th>
+        <th style="width:100px;">Language</th>
+        <th style="width:50px;">Runtime (min)</th>
+        <th style="width:50px;">Release Year</th>
+        <th style="width:30px;">Rating</th>
+    </tr>
+    {% for entry in table %}
+    <tr>
+        <td>
+            {{entry['movie_title']}}</td>
+        <td>
+            {{entry['genres']}}</td>
+        <td>
+            {{entry['spoken_language']}}</td>
+        <td>
+            {{entry['runtime']}}</td>
+        <td>
+            {{entry['year_released']}}</td>
+        <td>
+            {{entry['vote_average']}}</td>
+    </tr>
+    {% endfor %}
+</table> -->
+
+<script type="text/javascript">
+    updateFilter();
+
+    function updateFilter() {
+        let genre_val = document.getElementById("genres").value;
+        let runtime_min = document.getElementById("runtime").value;
+        let search_val = document.getElementById("search").value;
+
+        let formData = new FormData();
+
+        if (genre_val != 'All') {
+            formData.append('genre_filter', genre_val)
+        } else {
+            formData.append('genre_filter', 'All')
+        }
+
+        if (runtime_min != '') {
+            formData.append('runtime_filter', runtime_min)
+        } else {
+            formData.append('runtime_filter', 0)
+        }
+
+        if (search_val != '') {
+            formData.append('search_filter', search_val)
+        } else {
+            formData.append('search_filter', '')
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:5000/filter",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                let entry = JSON.parse(data);
+                let new_html = ''
+
+                for (let i = 0; i < entry.length; i++) {
+                    length_sum = entry[i].overview.length
+
+                    if (length_sum > 600) {
+                        length_sum = 600
+                    }
+
+                    new_html += '<div class="card"><div class="card_left"><img src={{ url_for("static", filename="images/interstellar.jpg" )}}></div>' +
+                        '<div class="card_right"><h1>' + entry[i].movie_title + ' (' + entry[i].vote_average + ')</h1><div class="card_right__details"><ul><li>'
+                        + entry[i].year_released + '</li><li>' + entry[i].runtime + ' mins</li><li>' + entry[i].genres + '</li></ul>' +
+                        '<div class="card_right__review"><p>' + entry[i].overview.slice(0, length_sum) + '</p><a href="' + entry[i].imdb_link
+                        + '" target="_blank">Read more </a></div><div class="card_right__button">' +
+                        '</div></div></div></div>'
+                }
+
+                let movie_selection = document.querySelector("#movies-selection");
+                movie_selection.innerHTML = new_html;
+            }
+        });
+    }
+
+</script>
+
+{% endblock %}
