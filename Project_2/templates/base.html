@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"
+        integrity="sha512-8Z5++K1rB3U+USaLKG6oO8uWWBhdYsM3hmdirnOEWp8h2B1aOikj5zBzlXs8QOrvY9OxEnD2QDkbSKKpfqcIWw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/regular.min.css"
+        integrity="sha512-WidMaWaNmZqjk3gDE6KBFCoDpBz9stTsTZZTeocfq/eDNkLfpakEd7qR0bPejvy/x0iT0dvzIq4IirnBtVer5A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="content-area">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+    <nav class="main-menu">
+        <ul>
+            <li>
+                <a href="{{ url_for('main') }}">
+                    <i class="fa fa-home fa-2x"></i>
+                    <span class="nav-text">
+                        Home
+                    </span>
+                </a>
+
+            </li>
+            <li class="has-subnav">
+                <a href="{{ url_for('find') }}">
+                    <i class="fa fa-film fa-2x"></i>
+                    <span class="nav-text">
+                        Find Movies
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('rec') }}">
+                    <i class="fa fa-comments fa-2x"></i>
+                    <span class="nav-text">
+                        Movie Recommendation
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('admin_dashboard') }}">
+                    <i class="fa fa-eye fa-2x"></i>
+                    <span class="nav-text">
+                        Overview
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('user_ratings') }}">
+                    <i class="fa fa-book fa-2x"></i>
+                    <span class="nav-text">
+                        User Performance
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</body>
+
+</html>

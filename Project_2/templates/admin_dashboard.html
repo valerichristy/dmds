@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="genre-title">{% block title %} Admin Dashboard {% endblock %}</h1>
+    <!-- <title>Admin Dashboard</title> -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+    <h1 class="genre-title">Top 5 Most Rated Films</h1>
+    <div id="films-chart"></div>
+
+    <h1 class="genre-title">Top 5 Users by Overall Score</h1>
+    <div id="users-chart"></div>
+
+    <h1 class="genre-title">Rating Distribution</h1>
+    <div id="ratingDist-chart"></div>
+
+    <!-- <h2>Average Rating per Movie</h2>
+    <div id="avgRating-chart"></div> -->
+
+
+    <script>
+        // Parse the chart data from JSON
+        var filmsChartData = JSON.parse('{{ films_chart_json | safe }}');
+        var usersChartData = JSON.parse('{{ users_chart_json | safe }}');
+        // var avgRatingData = JSON.parse('{{ avg_rating_chart_json | safe }}');
+        var ratingDistData = JSON.parse('{{ rating_distribution_chart_json | safe }}');
+
+        // Render the charts using Plotly
+        Plotly.newPlot('films-chart', filmsChartData.data, filmsChartData.layout);
+        Plotly.newPlot('users-chart', usersChartData.data, usersChartData.layout);
+        // Plotly.newPlot('avgRating-chart', avgRatingData.data, avgRatingData.layout);
+        Plotly.newPlot('ratingDist-chart', ratingDistData.data, ratingDistData.layout);
+        
+    </script>
+{% endblock %}
